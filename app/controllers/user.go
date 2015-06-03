@@ -65,6 +65,111 @@ func (c User) SendCode() revel.Result {
 }
 
 /**
+ * 用户注册
+ */
+func (c User) Registry() revel.Result {
+  var err error
+
+  req := new(models.User)
+
+  response := new(Response)
+  response.Success = true
+
+  err = json.NewDecoder(c.Request.Body).Decode(&req)
+  if err != nil {
+    response.Success = false
+    response.Error = "错误的请求"
+    return c.RenderJson(response)
+  }
+
+  if validPhone(req.PhoneNumber) {
+    err = req.NewUser()
+    if err != nil {
+      response.Success = false
+      response.Error = err.Error()
+      return c.RenderJson(response)
+    }
+  } else {
+    response.Success = false
+    response.Error = "手机号有误"
+    return c.RenderJson(response)
+  }
+
+  c.Session["user"] = req.DeviceToken
+
+  err = models.SetUserByPhone(req)
+  if err != nil {
+    response.Success = false
+    response.Error = err.Error()
+    return c.RenderJson(response)
+  }
+
+  return c.RenderJson(response)
+}
+
+/**
+ * 用户登录
+ */
+func (c User) SignIn() revel.Result {
+  var (
+    err  error
+    user *models.User
+  )
+
+  type signin struct {
+    Account  string `json:"phone"`
+    Password string `json:"password"`
+  }
+  req := new(signin)
+
+  response := new(Response)
+  response.Success = true
+  err = json.NewDecoder(c.Request.Body).Decode(&req)
+  if err != nil {
+    response.Success = false
+    response.Error = err.Error()
+    return c.RenderJson(response)
+  }
+
+  if validPhone(req.Account) {
+    user, err = models.GetUserByPhone(req.Account)
+  } else {
+    response.Success = false
+    response.Error = "手机号有误"
+    return c.RenderJson(response)
+  }
+
+  if user == nil {
+    response.Success = false
+    response.Error = "用户不存在"
+    return c.RenderJson(response)
+  }
+
+  if req.Password != user.Password {
+    response.Success = false
+    response.Error = "密码有误"
+    return c.RenderJson(response)
+  }
+
+  c.Session["user"] = user.DeviceToken
+  return c.RenderJson(response)
+}
+
+/**
+ * 用户登出
+ */
+func (c User) SignOut() revel.Result {
+  response := new(Response)
+  response.Success = true
+
+  for key := range c.Session {
+    delete(c.Session, key)
+  }
+
+  return c.RenderJson(response)
+}
+
+/**
  * 随机length长度的验证码
  */
 func randInt(min int, max int) int {
@@ -114,4 +219,5 @@ func sendSms(phone string, code string) error {
 
   body, _ := ioutil.ReadAll(response.Body)
   revel.INFO.Println(string(body))
+  return err
 }

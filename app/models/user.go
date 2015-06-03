@@ -31,7 +31,7 @@ type (
   }
 )
 
-func (u *User) NewUser() {
+func (u *User) NewUser() error {
   uid, _ := uuid.NewV4()
   u.UserId = uid.String()
   u.CreateAt = time.Now().Unix()
@@ -40,4 +40,5 @@ func (u *User) NewUser() {
   if err != nil {
     fmt.Println(err.Error())
   }
+  return err
 }
