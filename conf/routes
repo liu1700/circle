@@ -6,6 +6,18 @@ module:testrunner
 
 GET     /                                       App.Index
 
+# User registration
+#POST /u/registry  User.Registry
+
+# User sign in
+#POST /u/signin   User.SignIn
+
+# Sign out
+#POST /u/signout  User.SignOut
+# Send sms code to the phone
+POST /u/smscode                          User.SendCode
+#POST /u/smscode/verify/:device/:smscode  User.VerifySmsCode
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
