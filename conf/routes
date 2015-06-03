@@ -6,6 +6,10 @@ module:testrunner
 
 GET     /                                       App.Index
 
+GET		/f/feeds 						Feed.GetFeeds
+GET 	/f/feed/:feedId 				Feed.GetFeed
+POST 	/f/feed 						Feed.CreateFeed
+
 # User registration
 POST /u/registry/:device/:smscode  		User.Registry
 

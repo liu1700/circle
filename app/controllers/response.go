@@ -6,9 +6,10 @@ import (
 
 type (
   Response struct {
-    Success bool         `json:"success"`
-    Error   string       `json:"error,omitempty"`
-    User    *models.User `json:"user,omitempty"`
+    Success bool           `json:"success"`
+    Error   string         `json:"error,omitempty"`
+    User    *models.User   `json:"user,omitempty"`
+    Feed    []*models.Feed `json:"feed,omitempty"`
   }
 
   /**

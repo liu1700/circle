@@ -1,9 +1,7 @@
 package models
 
 import (
-  "fmt"
   "github.com/nu7hatch/gouuid"
-  "strconv"
   "time"
 )
 
@@ -20,6 +18,17 @@ type Feed struct {
   Loation   string  `json:"location"`
 }
 
-func (f *Feed) NewFeed() {
+const (
+  ONE_DAY = 86400
+)
 
+func (f *Feed) NewFeed() error {
+  fid, _ := uuid.NewV4()
+  f.FeedId = fid.String()
+
+  f.CreateAt = time.Now().Unix()
+  f.ExpiredAt = f.CreateAt + ONE_DAY
+  f.Expired = false
+
+  return SaveFeed(f)
 }

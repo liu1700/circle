@@ -62,11 +62,12 @@ func SaveFeed(feed *Feed) error {
   _ = _cache.Get(FEED_LIST, &feedIds)
   feedIds = append(feedIds, feed.FeedId)
 
-  _ = _cache.Set(FEED_LIST, value, expires)
+  _ = _cache.Set(FEED_LIST, feed, _cache.FOREVER)
 
   return _cache.Set(key, feed, _cache.FOREVER)
 }
 
+// 批量获取feed
 func GetFeeds() []*Feed {
   feedIds := []string{}
   _ = _cache.Get(FEED_LIST, &feedIds)
@@ -77,3 +78,13 @@ func GetFeeds() []*Feed {
   }
   return feeds
 }
+
+// 根据id获取feed
+func GetFeed(feedId string) (*Feed, error) {
+  key := CacheKeyFeedById(feedId)
+  feed := new(Feed)
+  err := _cache.Get(key, &feed)
+  return feed, err
+}
+
+//Comment
