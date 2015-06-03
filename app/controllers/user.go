@@ -9,7 +9,6 @@ import (
   "math/rand"
   "net/http"
   "net/url"
-  "regexp"
   "strconv"
   "strings"
   "time"
@@ -41,7 +40,7 @@ func (c User) SendCode() revel.Result {
     return c.RenderJson(response)
   }
 
-  if !validPhone(registry.PhoneNumber) || registry.DeviceToken == "" {
+  if registry.DeviceToken == "" {
     response.Success = false
     response.Error = "验证手机出错"
     return c.RenderJson(response)
@@ -112,16 +111,10 @@ func (c User) Registry(device string, smscode string) revel.Result {
     return c.RenderJson(response)
   }
 
-  if validPhone(req.PhoneNumber) {
-    err = req.NewUser()
-    if err != nil {
-      response.Success = false
-      response.Error = err.Error()
-      return c.RenderJson(response)
-    }
-  } else {
+  err = req.NewUser()
+  if err != nil {
     response.Success = false
-    response.Error = "手机号有误"
+    response.Error = err.Error()
     return c.RenderJson(response)
   }
 
@@ -161,13 +154,7 @@ func (c User) SignIn() revel.Result {
     return c.RenderJson(response)
   }
 
-  if validPhone(req.Account) {
-    user, err = models.GetUserByPhone(req.Account)
-  } else {
-    response.Success = false
-    response.Error = "手机号有误"
-    return c.RenderJson(response)
-  }
+  user, err = models.GetUserByPhone(req.Account)
 
   if user == nil {
     response.Success = false
@@ -201,6 +188,34 @@ func (c User) SignOut() revel.Result {
 }
 
 /**
+ * 用户更新名字
+ */
+func (c User) UpdateNickname() revel.Result {
+  req := new(models.User)
+  response := new(Response)
+  response.Success = true
+
+  // 解析内容
+  err := json.NewDecoder(c.Request.Body).Decode(&req)
+  if err != nil {
+    response.Success = false
+    response.Error = "错误的请求"
+    return c.RenderJson(response)
+  }
+
+  user, err := models.GetUserByPhone(req.PhoneNumber)
+  if user.UserId == "" {
+    response.Success = false
+    response.Error = "用户不存在"
+    return c.RenderJson(response)
+  }
+  user.Nickname = req.Nickname
+  models.SetUserByPhone(user)
+
+  return c.RenderJson(response)
+}
+
+/**
  * 随机length长度的验证码
  */
 func randInt(min int, max int) int {
@@ -215,11 +230,6 @@ func randCode(length int) string {
     i++
   }
   return code
-}
-
-func validPhone(phone string) bool {
-  m, _ := regexp.MatchString("^([1][3-8])\\d{9}$", phone)
-  return m
 }
 
 /**

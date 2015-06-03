@@ -10,12 +10,18 @@ GET     /                                       App.Index
 POST /u/registry/:device/:smscode  		User.Registry
 
 # User sign in
-POST /u/signin   User.SignIn
+POST /u/signin   						User.SignIn
 
 # Sign out
-POST /u/signout  User.SignOut
+POST /u/signout  						 User.SignOut
 # Send sms code to the phone
 POST /u/smscode                          User.SendCode
+
+#Update user name
+POST /u/update/nickname					 User.UpdateNickname
+#Update user avatar
+
+POST    /image/upload/                             Image.Upload
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

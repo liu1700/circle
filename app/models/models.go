@@ -54,3 +54,26 @@ func GetUserLocation(id string) (*UserLocation, error) {
   err := _cache.Get(key, &location)
   return location, err
 }
+
+// feed
+func SaveFeed(feed *Feed) error {
+  feedIds := []string{}
+  key := CacheKeyFeedById(feed.FeedId)
+  _ = _cache.Get(FEED_LIST, &feedIds)
+  feedIds = append(feedIds, feed.FeedId)
+
+  _ = _cache.Set(FEED_LIST, value, expires)
+
+  return _cache.Set(key, feed, _cache.FOREVER)
+}
+
+func GetFeeds() []*Feed {
+  feedIds := []string{}
+  _ = _cache.Get(FEED_LIST, &feedIds)
+  getter, _ := _cache.GetMulti(feedIds...)
+  feeds := make([]*Feed, len(feedIds))
+  for index, key := range feedIds {
+    _ = getter.Get(key, feeds[index])
+  }
+  return feeds
+}

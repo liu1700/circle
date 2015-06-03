@@ -9,7 +9,10 @@ const (
   USER_REGISTRY_KEY = CACHE_BASE + 1
   USER_BASE         = CACHE_BASE + 2
   USER_LOCATION     = CACHE_BASE + 3
+  FEED_CREATE       = CACHE_BASE + 4
   FEED              = CACHE_BASE + 7
+
+  FEED_LIST = "feedList"
 )
 
 func CacheKeyUserRegistry(deviceToken string) string {
@@ -22,4 +25,8 @@ func CacheKeyUserObjectId(objectId string) string {
 
 func CacheKeyUserLocationByUserId(userId string) string {
   return fmt.Sprintf("%d-%s", USER_LOCATION, userId)
+}
+
+func CacheKeyFeedById(feedid string) string {
+  return fmt.Sprintf("%d-%s", FEED_CREATE, feedid)
 }
