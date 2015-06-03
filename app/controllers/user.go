@@ -55,11 +55,17 @@ func (c User) SendCode() revel.Result {
   }
   revel.INFO.Println(registry.PhoneNumber)
   go func() {
-    err = sendSms(registry.PhoneNumber, randCode(6))
-    if err != nil {
-      e := models.SetUserRegistry(registry)
-      revel.ERROR.Println(e.Error())
-    }
+    code := randCode(6)
+    registry.SMSCode = code
+
+    revel.INFO.Println(code)
+
+    // err = sendSms(registry.PhoneNumber, code)
+    // if err != nil {
+    // e := models.SetUserRegistry(registry)
+    //   revel.ERROR.Println(e.Error())
+    // }
+    _ = models.SetUserRegistry(registry)
   }()
   return c.RenderJson(response)
 }
@@ -67,7 +73,7 @@ func (c User) SendCode() revel.Result {
 /**
  * 用户注册
  */
-func (c User) Registry() revel.Result {
+func (c User) Registry(device string, smscode string) revel.Result {
   var err error
 
   req := new(models.User)
@@ -75,6 +81,30 @@ func (c User) Registry() revel.Result {
   response := new(Response)
   response.Success = true
 
+  // 验证smscode
+  if device == "" || smscode == "" {
+    response.Success = false
+    response.Error = "错误的请求"
+    return c.RenderJson(response)
+  }
+
+  reg, err := models.GetUserRegistry(device)
+  if err != nil {
+    response.Success = false
+    response.Error = "手机与验证码不匹配"
+    return c.RenderJson(response)
+  }
+
+  if reg.DeviceToken != device || reg.SMSCode != smscode {
+    response.Success = false
+    response.Error = "验证码有误"
+    return c.RenderJson(response)
+  }
+
+  // 删除注册用缓存
+  _ = models.DelUserRegistry(reg)
+
+  // 解析内容
   err = json.NewDecoder(c.Request.Body).Decode(&req)
   if err != nil {
     response.Success = false
@@ -152,6 +182,7 @@ func (c User) SignIn() revel.Result {
   }
 
   c.Session["user"] = user.DeviceToken
+  revel.INFO.Println(user)
   return c.RenderJson(response)
 }
 
