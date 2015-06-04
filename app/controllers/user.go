@@ -33,12 +33,9 @@ func (c User) SendCode() revel.Result {
   response := new(Response)
   response.Success = true
 
-  err := json.NewDecoder(c.Request.Body).Decode(&registry)
-  if err != nil {
-    response.Success = false
-    response.Error = err.Error()
-    return c.RenderJson(response)
-  }
+  _ = c.Request.ParseForm()
+  registry.DeviceToken = c.Request.Form["devicetoken"][0]
+  registry.PhoneNumber = c.Request.Form["phone"][0]
 
   if registry.DeviceToken == "" {
     response.Success = false
@@ -104,12 +101,10 @@ func (c User) Registry(device string, smscode string) revel.Result {
   _ = models.DelUserRegistry(reg)
 
   // 解析内容
-  err = json.NewDecoder(c.Request.Body).Decode(&req)
-  if err != nil {
-    response.Success = false
-    response.Error = "错误的请求"
-    return c.RenderJson(response)
-  }
+  _ = c.Request.ParseForm()
+  req.Password = c.Request.Form["password"][0]
+  req.PhoneNumber = c.Request.Form["phone"][0]
+  req.DeviceToken = device
 
   err = req.NewUser()
   if err != nil {

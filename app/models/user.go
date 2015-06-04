@@ -9,23 +9,23 @@ import (
 
 type (
   Register struct {
-    DeviceToken string `json:"device_token"`
-    PhoneNumber string `json:"phone_number"`
-    SMSCode     string `json:"sms_code"`
+    DeviceToken string `json:"deviceToken"`
+    PhoneNumber string `json:"phone"`
+    SMSCode     string `json:"smsCode"`
   }
 
   User struct {
-    UserId      string `json:"user_id"`
+    UserId      string `json:"userId"`
     Nickname    string `json:"nickname"`
-    DeviceToken string `json:"device_token"`
-    PhoneNumber string `json:"phone_number"`
+    DeviceToken string `json:"deviceToken"`
+    PhoneNumber string `json:"phone"`
     Password    string `json:"password"`
-    AvatarId    string `json:"avatar_id"`
-    CreateAt    int64  `json:"create_at"`
+    AvatarId    string `json:"avatarId,omitempty"`
+    CreateAt    int64  `json:"createAt"`
   }
 
   UserLocation struct {
-    UserId string  `json:"user_id"`
+    UserId string  `json:"userId"`
     Lat    float64 `json:"lat"`
     Lon    float64 `json:"lon"`
   }
