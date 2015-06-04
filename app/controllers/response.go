@@ -7,7 +7,7 @@ import (
 type (
   Response struct {
     Success bool           `json:"success"`
-    Error   string         `json:"error,omitempty"`
+    Error   string         `json:"errors,omitempty"`
     User    *models.User   `json:"user,omitempty"`
     Feed    []*models.Feed `json:"feed,omitempty"`
   }

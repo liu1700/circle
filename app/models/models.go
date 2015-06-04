@@ -30,11 +30,11 @@ func SetUserByPhone(user *User) error {
   return _cache.Set(key, user, _cache.FOREVER)
 }
 
-func GetUserByPhone(phone string) (*User, error) {
+func GetUserByPhone(phone string) *User {
   key := CacheKeyUserObjectId(phone)
   user := new(User)
-  err := _cache.Get(key, &user)
-  return user, err
+  _ = _cache.Get(key, &user)
+  return user
 }
 
 func DelUserByPhone(phone string) error {

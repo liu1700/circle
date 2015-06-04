@@ -46,7 +46,7 @@ func (c User) SendCode() revel.Result {
     return c.RenderJson(response)
   }
 
-  user, err := models.GetUserByPhone(registry.PhoneNumber)
+  user := models.GetUserByPhone(registry.PhoneNumber)
   if user.UserId != "" {
     response.Success = false
     response.Error = "手机号已注册"
@@ -135,7 +135,6 @@ func (c User) Registry(device string, smscode string) revel.Result {
  */
 func (c User) SignIn() revel.Result {
   var (
-    err  error
     user *models.User
   )
 
@@ -152,17 +151,18 @@ func (c User) SignIn() revel.Result {
   req.Account = c.Request.Form["phone"][0]
   req.Password = c.Request.Form["password"][0]
 
-  user, err = models.GetUserByPhone(req.Account)
-
-  if user == nil {
+  user = models.GetUserByPhone(req.Account)
+  if user.UserId == "" {
     response.Success = false
-    response.Error = "用户不存在"
+    response.Error = "账号错误"
+    revel.INFO.Println(response)
     return c.RenderJson(response)
   }
 
   if req.Password != user.Password {
     response.Success = false
     response.Error = "密码有误"
+    revel.INFO.Println(response)
     return c.RenderJson(response)
   }
 
@@ -201,7 +201,7 @@ func (c User) UpdateNickname() revel.Result {
     return c.RenderJson(response)
   }
 
-  user, err := models.GetUserByPhone(req.PhoneNumber)
+  user := models.GetUserByPhone(req.PhoneNumber)
   if user.UserId == "" {
     response.Success = false
     response.Error = "用户不存在"
