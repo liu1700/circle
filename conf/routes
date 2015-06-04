@@ -10,6 +10,9 @@ GET		/f/feeds 						Feed.GetFeeds
 GET 	/f/feed/:feedId 				Feed.GetFeed
 POST 	/f/feed 						Feed.CreateFeed
 
+#GET 	/c/:feedId 						Comment.GetComments
+#POST 	/c/:feedId 						Comment.PostComment
+
 # User registration
 POST /u/registry/:device/:smscode  		User.Registry
 

@@ -145,14 +145,12 @@ func (c User) SignIn() revel.Result {
   }
   req := new(signin)
 
+  _ = c.Request.ParseForm()
+
   response := new(Response)
   response.Success = true
-  err = json.NewDecoder(c.Request.Body).Decode(&req)
-  if err != nil {
-    response.Success = false
-    response.Error = err.Error()
-    return c.RenderJson(response)
-  }
+  req.Account = c.Request.Form["phone"][0]
+  req.Password = c.Request.Form["password"][0]
 
   user, err = models.GetUserByPhone(req.Account)
 
