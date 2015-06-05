@@ -2,6 +2,7 @@ package controllers
 
 import (
   "circle/app/models"
+  "github.com/kellydunn/golang-geo"
   "github.com/revel/revel"
   "strconv"
 )
@@ -10,11 +11,19 @@ type Feed struct {
   App
 }
 
-func (f Feed) GetFeeds() revel.Result {
+func (f Feed) GetFeeds(lon float64, lat float64, distance float64) revel.Result {
   response := new(Response)
   response.Success = true
 
   feeds := models.GetFeeds()
+
+  userPosition := geo.NewPoint(lat, lon)
+  for _, f := range feeds {
+    feedPosition := geo.NewPoint(f.Lat, f.Lon)
+    km := userPosition.GreatCircleDistance(feedPosition)
+    revel.INFO.Println(km)
+  }
+
   response.Feed = feeds
 
   return f.RenderJson(response)
@@ -30,7 +39,7 @@ func (f Feed) GetFeed(feedId string) revel.Result {
     response.Error = err.Error()
     return f.RenderJson(response)
   }
-  response.Feed = append(response.Feed, feed)
+  response.Feed = append(response.Feed, *feed)
 
   return f.RenderJson(response)
 }
@@ -53,6 +62,7 @@ func (f Feed) CreateFeed() revel.Result {
   revel.INFO.Println(newFeed)
 
   err := newFeed.NewFeed()
+  revel.INFO.Println(err)
   if err != nil {
     response.Success = false
     response.Error = err.Error()

@@ -31,6 +31,9 @@ POST /u/update/nickname					 User.UpdateNickname
 POST    /image/avatar/:width/:height     Image.UploadAvatar
 POST    /image/upload/:width/:height     Image.UploadImage
 
+GET     /avatar/*filepath 				 Static.Serve("upload/avatar")
+GET     /images/*filepath 				 Static.Serve("upload/images")
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

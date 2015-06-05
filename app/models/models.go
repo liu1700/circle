@@ -60,21 +60,23 @@ func SaveFeed(feed *Feed) error {
   feedIds := []string{}
   key := CacheKeyFeedById(feed.FeedId)
   _ = _cache.Get(FEED_LIST, &feedIds)
-  feedIds = append(feedIds, feed.FeedId)
+  feedIds = append(feedIds, key)
 
-  _ = _cache.Set(FEED_LIST, feed, _cache.FOREVER)
+  _ = _cache.Set(FEED_LIST, feedIds, _cache.FOREVER)
 
-  return _cache.Set(key, feed, _cache.FOREVER)
+  return _cache.Set(key, *feed, _cache.FOREVER)
 }
 
 // 批量获取feed
-func GetFeeds() []*Feed {
+func GetFeeds() []Feed {
   feedIds := []string{}
   _ = _cache.Get(FEED_LIST, &feedIds)
   getter, _ := _cache.GetMulti(feedIds...)
-  feeds := make([]*Feed, len(feedIds))
+  feeds := make([]Feed, len(feedIds))
+  f := new(Feed)
+  _cache.Get(feedIds[0], f)
   for index, key := range feedIds {
-    _ = getter.Get(key, feeds[index])
+    _ = getter.Get(key, &feeds[index])
   }
   return feeds
 }
