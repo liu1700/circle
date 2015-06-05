@@ -72,9 +72,11 @@ func GetFeeds() []Feed {
   feedIds := []string{}
   _ = _cache.Get(FEED_LIST, &feedIds)
   getter, _ := _cache.GetMulti(feedIds...)
+
   feeds := make([]Feed, len(feedIds))
-  f := new(Feed)
-  _cache.Get(feedIds[0], f)
+  if len(feedIds) == 0 {
+    return feeds
+  }
   for index, key := range feedIds {
     _ = getter.Get(key, &feeds[index])
   }
