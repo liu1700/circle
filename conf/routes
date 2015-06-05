@@ -28,7 +28,7 @@ POST /u/smscode                          User.SendCode
 POST /u/update/nickname					 User.UpdateNickname
 #Update user avatar
 
-POST    /image/upload/                             Image.Upload
+POST    /image/upload/:width/:height     Image.Upload
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

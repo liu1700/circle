@@ -2,8 +2,8 @@ package controllers
 
 import (
   "circle/app/models"
-  "encoding/json"
   "github.com/revel/revel"
+  "strconv"
 )
 
 type Feed struct {
@@ -40,14 +40,17 @@ func (f Feed) CreateFeed() revel.Result {
   response.Success = true
 
   newFeed := new(models.Feed)
-  err := json.NewDecoder(f.Request.Body).Decode(&newFeed)
-  if err != nil {
-    response.Success = false
-    response.Error = err.Error()
-    return f.RenderJson(response)
-  }
 
-  err = newFeed.NewFeed()
+  _ = f.Request.ParseForm()
+  newFeed.UserId = f.Request.Form["userid"][0]
+  newFeed.Content = f.Request.Form["content"][0]
+  newFeed.ImageUrl = f.Request.Form["imageUrl"][0]
+  newFeed.Location = f.Request.Form["location"][0]
+
+  newFeed.Lon, _ = strconv.ParseFloat(f.Request.Form["lon"][0], 64)
+  newFeed.Lat, _ = strconv.ParseFloat(f.Request.Form["lat"][0], 64)
+
+  err := newFeed.NewFeed()
   if err != nil {
     response.Success = false
     response.Error = err.Error()

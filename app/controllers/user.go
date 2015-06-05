@@ -122,6 +122,13 @@ func (c User) Registry(device string, smscode string) revel.Result {
     return c.RenderJson(response)
   }
 
+  respUser := new(models.User)
+  respUser.AvatarId = req.AvatarId
+  respUser.Nickname = req.Nickname
+  respUser.UserId = req.UserId
+
+  response.User = respUser
+
   return c.RenderJson(response)
 }
 
@@ -162,7 +169,13 @@ func (c User) SignIn() revel.Result {
   }
 
   c.Session["user"] = user.DeviceToken
-  revel.INFO.Println(user)
+
+  respUser := new(models.User)
+  respUser.AvatarId = user.AvatarId
+  respUser.Nickname = user.Nickname
+  respUser.UserId = user.UserId
+
+  response.User = respUser
   return c.RenderJson(response)
 }
 
