@@ -2,7 +2,9 @@ package controllers
 
 import (
   "bytes"
+  "errors"
   "github.com/nfnt/resize"
+  "github.com/nu7hatch/gouuid"
   "github.com/revel/revel"
   "image"
   "image/jpeg"
@@ -14,16 +16,49 @@ type Image struct {
 }
 
 const (
-  FILE_UPLOAD_PATH = "/Users/liuyuchen/gocode/src/circle/upload/"
-  MB               = 1 << 20 // 1MB
+  AVATAR_UPLOAD_PATH = "/Users/liuyuchen/gocode/src/circle/upload/avatar/"
+  IMAGE_UPLOAD_PATH  = "/Users/liuyuchen/gocode/src/circle/upload/images/"
+  MB                 = 1 << 20 // 1MB
 )
 
-func (c Image) Upload(width uint, height uint) revel.Result {
+func (c Image) UploadAvatar(width uint, height uint) revel.Result {
   response := new(Response)
   response.Success = true
+
+  success, err, _ := processImage(c, AVATAR_UPLOAD_PATH, width, height)
+  if !success {
+    response.Success = false
+    response.Error = err.Error()
+    return c.RenderJson(response)
+  }
+
+  return c.RenderJson(response)
+}
+
+func (c Image) UploadImage(width uint, height uint) revel.Result {
+  response := new(Response)
+  response.Success = true
+
+  success, err, fileName := processImage(c, IMAGE_UPLOAD_PATH, width, height)
+  if !success {
+    response.Success = false
+    response.Error = err.Error()
+    revel.INFO.Println(response)
+    return c.RenderJson(response)
+  }
+
+  response.Image = fileName
+
+  return c.RenderJson(response)
+}
+
+func processImage(c Image, filePath string, width uint, height uint) (bool, error, string) {
+  var fileName string
+
   e := c.Request.ParseMultipartForm(10 * MB)
   if e != nil {
     revel.INFO.Println(e.Error())
+    return false, e, ""
   }
   if imagePart, handler, e := c.Request.FormFile("file"); e == nil {
 
@@ -32,36 +67,39 @@ func (c Image) Upload(width uint, height uint) revel.Result {
     imageStream := make([]byte, 10*MB)
 
     revel.INFO.Println(handler.Filename)
+    fileName = handler.Filename
+    if fileName == "image" {
+      uuid, _ := uuid.NewV4()
+      fileName = uuid.String()
+    }
+
     imagePart.Read(imageStream)
     img, str, err := image.Decode(bytes.NewReader(imageStream))
     if err != nil {
       revel.ERROR.Println(err.Error())
-      response.Success = false
-      response.Error = "解析图片失败"
+      return false, errors.New("解析图片失败"), ""
     }
     revel.INFO.Println(str)
 
     newImage := resize.Resize(width, height, img, resize.Lanczos2)
 
     // create file for write
-    if f, e := os.Create(FILE_UPLOAD_PATH + handler.Filename + ".jpg"); e == nil {
+    if f, e := os.Create(filePath + fileName + ".jpg"); e == nil {
 
       err := jpeg.Encode(f, newImage, nil)
       if err != nil {
         revel.ERROR.Printf(err.Error())
-        response.Success = false
-        response.Error = "写入图片失败"
+        return false, errors.New("写入图片失败"), ""
       }
 
     } else {
       revel.ERROR.Printf(e.Error())
-      response.Success = false
-      response.Error = "上传图片失败"
+      return false, errors.New("上传图片失败"), ""
     }
   } else {
     revel.ERROR.Printf(e.Error())
-    response.Success = false
-    response.Error = "上传图片失败"
+    return false, errors.New("上传图片失败"), ""
   }
-  return c.RenderJson(response)
+
+  return true, nil, fileName
 }
