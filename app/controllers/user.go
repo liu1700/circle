@@ -56,9 +56,9 @@ func (c User) SendCode() revel.Result {
 
     revel.INFO.Println(code)
 
-    err = sendSms(registry.PhoneNumber, code)
+    err := sendSms(registry.PhoneNumber, code)
     if err != nil {
-      revel.ERROR.Println(e.Error())
+      revel.ERROR.Println(err.Error())
       return
     }
     _ = models.SetUserRegistry(registry)
