@@ -56,11 +56,11 @@ func (c User) SendCode() revel.Result {
 
     revel.INFO.Println(code)
 
-    // err = sendSms(registry.PhoneNumber, code)
-    // if err != nil {
-    // e := models.SetUserRegistry(registry)
-    //   revel.ERROR.Println(e.Error())
-    // }
+    err = sendSms(registry.PhoneNumber, code)
+    if err != nil {
+      revel.ERROR.Println(e.Error())
+      return
+    }
     _ = models.SetUserRegistry(registry)
   }()
   return c.RenderJson(response)
