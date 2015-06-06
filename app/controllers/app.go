@@ -31,5 +31,6 @@ func (c App) Check(deviceId string) revel.Result {
     response.Success = false
     return c.RenderJson(response)
   }
+  response.Success = false
   return c.RenderJson(response)
 }
