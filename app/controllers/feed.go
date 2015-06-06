@@ -18,6 +18,13 @@ func (f Feed) GetFeeds(lon float64, lat float64, distance float64, timestamp int
 
   feeds := models.GetFeeds()
 
+  revel.INFO.Println(lon)
+  revel.INFO.Println(timestamp)
+  revel.INFO.Println(distance)
+  revel.INFO.Println(lat)
+
+  revel.INFO.Println(feeds)
+
   userPosition := geo.NewPoint(lat, lon)
   for _, f := range feeds {
     if f.CreateAt <= timestamp {

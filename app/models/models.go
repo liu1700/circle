@@ -92,3 +92,15 @@ func GetFeed(feedId string) (*Feed, error) {
 }
 
 //Comment
+func SaveComment(c Comment) error {
+  comments := []Comment{}
+  _ = _cache.Get(c.FeedId, &comments)
+  comments = append(comments, c)
+  return _cache.Set(c.FeedId, comments, _cache.FOREVER)
+}
+
+func GetComments(feedId string) []Comment {
+  comments := []Comment{}
+  _ = _cache.Get(feedId, &comments)
+  return comments
+}
