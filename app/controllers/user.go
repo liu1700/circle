@@ -104,7 +104,6 @@ func (c User) Registry(device string, smscode string) revel.Result {
   _ = c.Request.ParseForm()
   req.Password = c.Request.Form["password"][0]
   req.PhoneNumber = c.Request.Form["phone"][0]
-  req.AvatarId = c.Request.Form["avatarid"][0]
   req.DeviceToken = device
 
   err = req.NewUser()
@@ -114,8 +113,14 @@ func (c User) Registry(device string, smscode string) revel.Result {
     return c.RenderJson(response)
   }
 
-  c.Session["user"] = req.DeviceToken
+  c.Session["user"] = req.UserId
 
+  err = models.SetUserById(req)
+  if err != nil {
+    response.Success = false
+    response.Error = err.Error()
+    return c.RenderJson(response)
+  }
   err = models.SetUserByPhone(req)
   if err != nil {
     response.Success = false
@@ -169,7 +174,7 @@ func (c User) SignIn() revel.Result {
     return c.RenderJson(response)
   }
 
-  c.Session["user"] = user.DeviceToken
+  c.Session["user"] = user.UserId
 
   respUser := new(models.User)
   respUser.AvatarId = user.AvatarId

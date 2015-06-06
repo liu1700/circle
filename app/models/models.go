@@ -25,9 +25,21 @@ func DelUserRegistry(registry *Register) error {
 }
 
 // user
+func SetUserById(user *User) error {
+  key := CacheKeyUserObjectId(user.UserId)
+  return _cache.Set(key, user, _cache.FOREVER)
+}
+
 func SetUserByPhone(user *User) error {
   key := CacheKeyUserObjectId(user.PhoneNumber)
   return _cache.Set(key, user, _cache.FOREVER)
+}
+
+func GetUserById(userid string) *User {
+  key := CacheKeyUserObjectId(userid)
+  user := new(User)
+  _ = _cache.Get(key, &user)
+  return user
 }
 
 func GetUserByPhone(phone string) *User {
@@ -37,8 +49,8 @@ func GetUserByPhone(phone string) *User {
   return user
 }
 
-func DelUserByPhone(phone string) error {
-  key := CacheKeyUserObjectId(phone)
+func DelUserById(userid string) error {
+  key := CacheKeyUserObjectId(userid)
   return _cache.Delete(key)
 }
 
