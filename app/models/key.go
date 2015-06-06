@@ -10,6 +10,7 @@ const (
   USER_BASE         = CACHE_BASE + 2
   USER_LOCATION     = CACHE_BASE + 3
   FEED_CREATE       = CACHE_BASE + 4
+  MESSAGE           = CACHE_BASE + 5
   FEED              = CACHE_BASE + 7
 
   FEED_LIST = "feedList"
@@ -29,4 +30,8 @@ func CacheKeyUserLocationByUserId(userId string) string {
 
 func CacheKeyFeedById(feedid string) string {
   return fmt.Sprintf("%d-%s", FEED_CREATE, feedid)
+}
+
+func CacheMessageKey(userid string) string {
+  return fmt.Sprintf("%d-%s", MESSAGE, userid)
 }

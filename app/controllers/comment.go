@@ -21,7 +21,22 @@ func (c Comment) PostComment(feedId string) revel.Result {
   newComment.Content = c.Request.Form["content"][0]
   newComment.Nickname = c.Request.Form["nickname"][0]
 
-  err := newComment.NewComment()
+  // init msgs
+  newMessage := new(models.Message)
+  newMessage.FeedId = feedId
+  newMessage.UserId = newComment.UserId
+  newMessage.Nickname = newComment.Nickname
+  newMessage.Type = 1
+  newMessage.Checked = 0
+  err := newMessage.AddMessage()
+  if err != nil {
+    response.Success = false
+    response.Error = err.Error()
+    return c.RenderJson(response)
+  }
+
+  // save comment
+  err = newComment.NewComment()
   if err != nil {
     response.Success = false
     response.Error = err.Error()

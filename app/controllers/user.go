@@ -104,6 +104,7 @@ func (c User) Registry(device string, smscode string) revel.Result {
   _ = c.Request.ParseForm()
   req.Password = c.Request.Form["password"][0]
   req.PhoneNumber = c.Request.Form["phone"][0]
+  req.AvatarId = c.Request.Form["avatarid"][0]
   req.DeviceToken = device
 
   err = req.NewUser()
@@ -174,6 +175,8 @@ func (c User) SignIn() revel.Result {
   respUser.AvatarId = user.AvatarId
   respUser.Nickname = user.Nickname
   respUser.UserId = user.UserId
+
+  revel.INFO.Println(respUser)
 
   response.User = respUser
   return c.RenderJson(response)

@@ -104,3 +104,32 @@ func GetComments(feedId string) []Comment {
   _ = _cache.Get(feedId, &comments)
   return comments
 }
+
+// Message
+func AddToMessageList(m Message) error {
+  msgs := []Message{}
+  key := CacheMessageKey(m.UserId)
+  _ = _cache.Get(key, &msgs)
+  msgs = append(msgs, m)
+  return _cache.Set(key, msgs, _cache.FOREVER)
+}
+
+func GetMessages(userid string) []Message {
+  msgs := []Message{}
+  key := CacheMessageKey(userid)
+  _ = _cache.Get(key, &msgs)
+  return msgs
+}
+
+func SetMsgChecked(userid string, msgid string) {
+  msgs := []Message{}
+  key := CacheMessageKey(userid)
+  _ = _cache.Get(key, &msgs)
+
+  for _, m := range msgs {
+    if m.MessageId == msgid {
+      m.Checked = 1
+      break
+    }
+  }
+}

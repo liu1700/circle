@@ -11,6 +11,7 @@ type (
     User    *models.User     `json:"user,omitempty"`
     Feed    []models.Feed    `json:"feeds,omitempty"`
     Comment []models.Comment `json:"comments,omitempty"`
+    Message []models.Message `json:"messages,omitempty"`
     Image   string           `json:"image,omitempty"`
   }
 )
