@@ -204,27 +204,20 @@ func (c User) SignOut() revel.Result {
 /**
  * 用户更新名字
  */
-func (c User) UpdateNickname() revel.Result {
-  req := new(models.User)
+func (c User) UpdateNickname(userid string) revel.Result {
   response := new(Response)
   response.Success = true
 
-  // 解析内容
-  err := json.NewDecoder(c.Request.Body).Decode(&req)
-  if err != nil {
-    response.Success = false
-    response.Error = "错误的请求"
-    return c.RenderJson(response)
-  }
+  _ = c.Request.ParseForm()
 
-  user := models.GetUserByPhone(req.PhoneNumber)
+  user := models.GetUserById(userid)
   if user.UserId == "" {
     response.Success = false
     response.Error = "用户不存在"
     return c.RenderJson(response)
   }
-  user.Nickname = req.Nickname
-  models.SetUserByPhone(user)
+  user.Nickname = c.Request.Form["nickname"][0]
+  models.SetUserById(user)
 
   return c.RenderJson(response)
 }

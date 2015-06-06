@@ -24,12 +24,12 @@ POST /u/registry/:device/:smscode  		User.Registry
 POST /u/signin   						User.SignIn
 
 # Sign out
-POST /u/signout  						 User.SignOut
+GET /u/signout  						 User.SignOut
 # Send sms code to the phone
 POST /u/smscode                          User.SendCode
 
 #Update user name
-POST /u/update/nickname					 User.UpdateNickname
+POST /u/update/nickname/:userid			 User.UpdateNickname
 #Update user avatar
 
 POST    /image/avatar/:width/:height     Image.UploadAvatar
