@@ -18,6 +18,8 @@ func (c App) Check(deviceId string) revel.Result {
   response.Success = true
 
   uid, findUid := c.Session["user"]
+  revel.INFO.Println(uid)
+  revel.INFO.Println(findUid)
   if findUid {
     user := models.GetUserById(uid)
     if user.UserId != "" && user.DeviceToken == deviceId {
