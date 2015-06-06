@@ -16,16 +16,22 @@ type Image struct {
 }
 
 const (
-  AVATAR_UPLOAD_PATH = "/Users/liuyuchen/gocode/src/circle/upload/avatar/"
-  IMAGE_UPLOAD_PATH  = "/Users/liuyuchen/gocode/src/circle/upload/images/"
+  AVATAR_UPLOAD_PATH = "/gocode/src/circle/upload/avatar/"
+  IMAGE_UPLOAD_PATH  = "/gocode/src/circle/upload/images/"
   MB                 = 1 << 20 // 1MB
 )
+
+var ROOT string
+
+func init() {
+  ROOT, _ = os.Getwd()
+}
 
 func (c Image) UploadAvatar(width uint, height uint) revel.Result {
   response := new(Response)
   response.Success = true
 
-  success, err, _ := processImage(c, AVATAR_UPLOAD_PATH, width, height)
+  success, err, _ := processImage(c, ROOT+AVATAR_UPLOAD_PATH, width, height)
   if !success {
     response.Success = false
     response.Error = err.Error()
@@ -39,7 +45,7 @@ func (c Image) UploadImage(width uint, height uint) revel.Result {
   response := new(Response)
   response.Success = true
 
-  success, err, fileName := processImage(c, IMAGE_UPLOAD_PATH, width, height)
+  success, err, fileName := processImage(c, ROOT+IMAGE_UPLOAD_PATH, width, height)
   if !success {
     response.Success = false
     response.Error = err.Error()
