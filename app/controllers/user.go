@@ -2,7 +2,6 @@ package controllers
 
 import (
   "circle/app/models"
-  "encoding/json"
   "fmt"
   "github.com/revel/revel"
   "io/ioutil"
