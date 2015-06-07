@@ -135,7 +135,7 @@ func GetFeeds() []Feed {
     return feeds
   }
   for index, key := range feedIds {
-    _ = getter.Get(key, &feeds[len(feedIds)-1-index])
+    _ = getter.Get(key, &feeds[index])
   }
   return feeds
 }
