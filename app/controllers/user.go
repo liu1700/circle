@@ -173,6 +173,12 @@ func (c User) SignIn() revel.Result {
     return c.RenderJson(response)
   }
 
+  err := models.SetUserById(user)
+  if err != nil {
+    response.Success = false
+    response.Error = err.Error()
+    return c.RenderJson(response)
+  }
   models.CacheSession(user.UserId)
 
   respUser := new(models.User)
