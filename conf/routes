@@ -9,6 +9,7 @@ GET 	/check/:deviceId/:userid 				App.Check
 
 GET		/f/feeds/:lon/:lat/:distance/:timestamp Feed.GetFeeds
 GET 	/f/feed/:feedId 				Feed.GetFeed
+GET 	/f/feed/own/:userid 			Feed.GetUserFeeds
 POST 	/f/feed 						Feed.CreateFeed
 
 GET 	/m/:userId 						Message.Get

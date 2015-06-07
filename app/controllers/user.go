@@ -221,6 +221,7 @@ func (c User) UpdateNickname(userid string) revel.Result {
   }
   user.Nickname = c.Request.Form["nickname"][0]
   models.SetUserById(user)
+  models.SetUserByPhone(user)
 
   return c.RenderJson(response)
 }

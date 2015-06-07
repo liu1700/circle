@@ -90,6 +90,7 @@ func GetUserLocation(id string) (*UserLocation, error) {
 
 // feed
 func SaveFeed(feed *Feed) error {
+  // to feed list
   feedIds := []string{}
   key := CacheKeyFeedById(feed.FeedId)
   _ = _cache.Get(FEED_LIST, &feedIds)
@@ -97,7 +98,23 @@ func SaveFeed(feed *Feed) error {
 
   _ = _cache.Set(FEED_LIST, feedIds, _cache.FOREVER)
 
+  // to user feed list
+  feeds := []Feed{}
+  userKey := CacheFeedForUser(feed.UserId)
+  _ = _cache.Get(userKey, &feeds)
+  newFeeds := make([]Feed, len(feeds)+1)
+  newFeeds = append(newFeeds, *feed)
+  newFeeds = append(newFeeds, feeds...)
+  _ = _cache.Set(userKey, newFeeds, _cache.FOREVER)
+
   return _cache.Set(key, *feed, _cache.FOREVER)
+}
+
+func GetUserFeeds(userid string) []Feed {
+  feeds := []Feed{}
+  userKey := CacheFeedForUser(userid)
+  _ = _cache.Get(userKey, &feeds)
+  return feeds
 }
 
 // 批量获取feed
@@ -111,7 +128,7 @@ func GetFeeds() []Feed {
     return feeds
   }
   for index, key := range feedIds {
-    _ = getter.Get(key, &feeds[index])
+    _ = getter.Get(key, &feeds[len(feedIds)-1-index])
   }
   return feeds
 }

@@ -60,6 +60,16 @@ func (f Feed) GetFeed(feedId string) revel.Result {
   return f.RenderJson(response)
 }
 
+func (f Feed) GetUserFeeds(userid string) revel.Result {
+  response := new(Response)
+  response.Success = true
+
+  feeds := models.GetUserFeeds(userid)
+  response.Feed = feeds
+
+  return f.RenderJson(response)
+}
+
 func (f Feed) CreateFeed() revel.Result {
   response := new(Response)
   response.Success = true

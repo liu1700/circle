@@ -37,6 +37,10 @@ func CacheKeyFeedById(feedid string) string {
   return fmt.Sprintf("%d-%s", FEED_CREATE, feedid)
 }
 
+func CacheFeedForUser(userid string) string {
+  return fmt.Sprintf("%d-%s", FEED, userid)
+}
+
 func CacheMessageKey(userid string) string {
   return fmt.Sprintf("%d-%s", MESSAGE, userid)
 }
