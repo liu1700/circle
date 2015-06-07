@@ -94,7 +94,9 @@ func SaveFeed(feed *Feed) error {
   feedIds := []string{}
   key := CacheKeyFeedById(feed.FeedId)
   _ = _cache.Get(FEED_LIST, &feedIds)
-  feedIds = append(feedIds, key)
+  newFeedIds := []string{}
+  newFeedIds = append(newFeedIds, key)
+  newFeedIds = append(newFeedIds, feedIds...)
 
   _ = _cache.Set(FEED_LIST, feedIds, _cache.FOREVER)
 
@@ -102,7 +104,7 @@ func SaveFeed(feed *Feed) error {
   feeds := []Feed{}
   userKey := CacheFeedForUser(feed.UserId)
   _ = _cache.Get(userKey, &feeds)
-  newFeeds := make([]Feed, len(feeds)+1)
+  newFeeds := []Feed{}
   newFeeds = append(newFeeds, *feed)
   newFeeds = append(newFeeds, feeds...)
   _ = _cache.Set(userKey, newFeeds, _cache.FOREVER)
@@ -128,7 +130,7 @@ func GetFeeds() []Feed {
     return feeds
   }
   for index, key := range feedIds {
-    _ = getter.Get(key, &feeds[len(feedIds)-1-index])
+    _ = getter.Get(key, &feeds[index])
   }
   return feeds
 }
