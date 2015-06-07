@@ -16,8 +16,8 @@ type Image struct {
 }
 
 const (
-  AVATAR_UPLOAD_PATH = "/upload/avatar/"
-  IMAGE_UPLOAD_PATH  = "/upload/images/"
+  AVATAR_UPLOAD_PATH = "/gocode/src/circle/upload/avatar/"
+  IMAGE_UPLOAD_PATH  = "/gocode/src/circle/upload/images/"
   MB                 = 1 << 20 // 1MB
 )
 

@@ -11,7 +11,7 @@ type Feed struct {
   App
 }
 
-func (f Feed) GetFeeds(lon float64, lat float64, distance float64, timestamp int64) revel.Result {
+func (f Feed) GetFeeds(lon float64, lat float64, distance float64) revel.Result {
   response := new(Response)
   response.Success = true
   respFeeds := []models.Feed{}
@@ -20,14 +20,13 @@ func (f Feed) GetFeeds(lon float64, lat float64, distance float64, timestamp int
 
   userPosition := geo.NewPoint(lat, lon)
   for _, f := range feeds {
-    if f.CreateAt <= timestamp {
-      continue
-    }
     feedPosition := geo.NewPoint(f.Lat, f.Lon)
     km := userPosition.GreatCircleDistance(feedPosition)
     if km > distance {
       continue
     }
+    comments := models.GetComments(f.FeedId)
+    f.CommentCont = len(comments)
     revel.INFO.Println(km)
     respFeeds = append(respFeeds, f)
   }

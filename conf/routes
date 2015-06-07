@@ -7,7 +7,7 @@ module:testrunner
 GET     /                                       App.Index
 GET 	/check/:deviceId/:userid 				App.Check
 
-GET		/f/feeds/:lon/:lat/:distance/:timestamp 		Feed.GetFeeds
+GET		/f/feeds/:lon/:lat/:distance 	Feed.GetFeeds
 GET 	/f/feed/:feedId 				Feed.GetFeed
 GET 	/f/feed/own/:userid 			Feed.GetUserFeeds
 POST 	/f/feed 						Feed.CreateFeed

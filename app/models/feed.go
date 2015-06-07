@@ -6,16 +6,17 @@ import (
 )
 
 type Feed struct {
-  FeedId    string  `json:"feedId"`
-  UserId    string  `json:"userId"`
-  Content   string  `json:"content"`
-  ImageUrl  string  `json:"imageUrl,omitempty"`
-  CreateAt  int64   `json:"createAt"`
-  ExpiredAt int64   `json:"expiredAt"`
-  Expired   bool    `json:"expired"`
-  Lon       float64 `json:"lon"`
-  Lat       float64 `json:"lat"`
-  Location  string  `json:"location"`
+  FeedId      string  `json:"feedId"`
+  UserId      string  `json:"userId"`
+  Content     string  `json:"content"`
+  ImageUrl    string  `json:"imageUrl,omitempty"`
+  CreateAt    int64   `json:"createAt"`
+  ExpiredAt   int64   `json:"expiredAt"`
+  Expired     bool    `json:"expired"`
+  CommentCont int     `json:"commentCount"`
+  Lon         float64 `json:"lon"`
+  Lat         float64 `json:"lat"`
+  Location    string  `json:"location"`
 }
 
 const (
