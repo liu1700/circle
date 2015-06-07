@@ -180,7 +180,7 @@ func (c User) SignIn() revel.Result {
   respUser.Nickname = user.Nickname
   respUser.UserId = user.UserId
 
-  revel.INFO.Println(c.Request.Header)
+  revel.INFO.Println(c.Session)
 
   response.User = respUser
   return c.RenderJson(response)
