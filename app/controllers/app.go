@@ -13,15 +13,13 @@ func (c App) Index() revel.Result {
   return c.Render()
 }
 
-func (c App) Check(deviceId string) revel.Result {
+func (c App) Check(deviceId string, userid string) revel.Result {
   response := new(Response)
   response.Success = true
 
-  uid, findUid := c.Session["user"]
-  revel.INFO.Println(uid)
-  revel.INFO.Println(findUid)
+  findUid := models.CheckSession(userid)
   if findUid {
-    user := models.GetUserById(uid)
+    user := models.GetUserById(userid)
     if user.UserId != "" && user.DeviceToken == deviceId {
       response.User = user
       return c.RenderJson(response)

@@ -5,7 +5,7 @@
 module:testrunner
 
 GET     /                                       App.Index
-GET 	/check/:deviceId 						App.Check
+GET 	/check/:deviceId/:userid 				App.Check
 
 GET		/f/feeds/:lon/:lat/:distance/:timestamp Feed.GetFeeds
 GET 	/f/feed/:feedId 				Feed.GetFeed
@@ -24,7 +24,7 @@ POST /u/registry/:device/:smscode  		User.Registry
 POST /u/signin   						User.SignIn
 
 # Sign out
-GET /u/signout  						 User.SignOut
+GET /u/signout/:userid  						 User.SignOut
 # Send sms code to the phone
 POST /u/smscode                          User.SendCode
 

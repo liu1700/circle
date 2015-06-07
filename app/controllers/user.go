@@ -112,7 +112,7 @@ func (c User) Registry(device string, smscode string) revel.Result {
     return c.RenderJson(response)
   }
 
-  c.Session["user"] = req.UserId
+  models.CacheSession(req.UserId)
 
   err = models.SetUserById(req)
   if err != nil {
@@ -173,7 +173,7 @@ func (c User) SignIn() revel.Result {
     return c.RenderJson(response)
   }
 
-  c.Session["user"] = user.UserId
+  models.CacheSession(user.UserId)
 
   respUser := new(models.User)
   respUser.AvatarId = user.AvatarId
@@ -189,13 +189,11 @@ func (c User) SignIn() revel.Result {
 /**
  * 用户登出
  */
-func (c User) SignOut() revel.Result {
+func (c User) SignOut(userid string) revel.Result {
   response := new(Response)
   response.Success = true
 
-  for key := range c.Session {
-    delete(c.Session, key)
-  }
+  _ = models.DelSession(userid)
 
   return c.RenderJson(response)
 }

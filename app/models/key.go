@@ -11,10 +11,15 @@ const (
   USER_LOCATION     = CACHE_BASE + 3
   FEED_CREATE       = CACHE_BASE + 4
   MESSAGE           = CACHE_BASE + 5
+  SESSION           = CACHE_BASE + 6
   FEED              = CACHE_BASE + 7
 
   FEED_LIST = "feedList"
 )
+
+func Session(id string) string {
+  return fmt.Sprintf("%d-%s", SESSION, id)
+}
 
 func CacheKeyUserRegistry(deviceToken string) string {
   return fmt.Sprintf("%d-%s", USER_REGISTRY_KEY, deviceToken)

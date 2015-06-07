@@ -6,6 +6,27 @@ import (
   "time"
 )
 
+// cache session
+func CacheSession(id string) error {
+  key := Session(id)
+  return _cache.Set(key, id, _cache.FOREVER)
+}
+
+func CheckSession(id string) bool {
+  cachedId := ""
+  key := Session(id)
+  err := _cache.Get(key, &cachedId)
+  if err != nil || cachedId == "" {
+    return false
+  }
+  return true
+}
+
+func DelSession(id string) error {
+  key := Session(id)
+  return _cache.Delete(key)
+}
+
 // user registry
 func SetUserRegistry(registry *Register) error {
   key := CacheKeyUserRegistry(registry.DeviceToken)
