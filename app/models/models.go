@@ -3,6 +3,7 @@ package models
 import (
   _cache "github.com/revel/revel/cache"
   // "log"
+  "github.com/revel/revel"
   "time"
 )
 
@@ -98,7 +99,9 @@ func SaveFeed(feed *Feed) error {
   newFeedIds = append(newFeedIds, key)
   newFeedIds = append(newFeedIds, feedIds...)
 
-  _ = _cache.Set(FEED_LIST, feedIds, _cache.FOREVER)
+  revel.INFO.Println(feedIds)
+
+  _ = _cache.Set(FEED_LIST, newFeedIds, _cache.FOREVER)
 
   // to user feed list
   feeds := []Feed{}
@@ -124,6 +127,8 @@ func GetFeeds() []Feed {
   feedIds := []string{}
   _ = _cache.Get(FEED_LIST, &feedIds)
   getter, _ := _cache.GetMulti(feedIds...)
+
+  revel.INFO.Println(feedIds)
 
   feeds := make([]Feed, len(feedIds))
   if len(feedIds) == 0 {
