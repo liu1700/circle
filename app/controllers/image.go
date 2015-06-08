@@ -31,7 +31,7 @@ func (c Image) UploadAvatar(width uint, height uint) revel.Result {
   response := new(Response)
   response.Success = true
 
-  success, err, _ := processImage(c, ROOT+AVATAR_UPLOAD_PATH, width, height)
+  success, err, _ := processImage(c, AVATAR_UPLOAD_PATH, width, height)
   if !success {
     response.Success = false
     response.Error = err.Error()
@@ -45,7 +45,7 @@ func (c Image) UploadImage(width uint, height uint) revel.Result {
   response := new(Response)
   response.Success = true
 
-  success, err, fileName := processImage(c, ROOT+IMAGE_UPLOAD_PATH, width, height)
+  success, err, fileName := processImage(c, IMAGE_UPLOAD_PATH, width, height)
   if !success {
     response.Success = false
     response.Error = err.Error()
@@ -90,7 +90,7 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     newImage := resize.Resize(width, height, img, resize.Lanczos2)
 
     // create file for write
-    if f, e := os.Create(filePath + fileName + ".jpg"); e == nil {
+    if f, e := os.Create(ROOT + filePath + fileName + ".jpg"); e == nil {
 
       err := jpeg.Encode(f, newImage, nil)
       if err != nil {
@@ -99,8 +99,18 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
       }
 
     } else {
-      revel.ERROR.Printf(e.Error())
-      return false, errors.New("上传图片失败"), ""
+      if f, e := os.Create(ROOT + "/gocode/src/circle" + filePath + fileName + ".jpg"); e == nil {
+
+        err := jpeg.Encode(f, newImage, nil)
+        if err != nil {
+          revel.ERROR.Printf(err.Error())
+          return false, errors.New("写入图片失败"), ""
+        }
+
+      } else {
+        revel.ERROR.Printf(e.Error())
+        return false, errors.New("上传图片失败"), ""
+      }
     }
   } else {
     revel.ERROR.Printf(e.Error())

@@ -32,8 +32,6 @@ func (f Feed) GetFeeds(lon float64, lat float64, distance float64) revel.Result 
   }
 
   response.Feed = respFeeds
-  revel.INFO.Println(respFeeds)
-
   return f.RenderJson(response)
 }
 
