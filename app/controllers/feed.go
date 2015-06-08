@@ -73,11 +73,10 @@ func (f Feed) CreateFeed() revel.Result {
     newFeed.ImageUrl = f.Request.Form["imageId"][0]
   }
   newFeed.Location = f.Request.Form["location"][0]
+  newFeed.UserAvatar = f.Request.Form["userAvatar"][0]
 
   newFeed.Lon, _ = strconv.ParseFloat(f.Request.Form["lon"][0], 64)
   newFeed.Lat, _ = strconv.ParseFloat(f.Request.Form["lat"][0], 64)
-
-  revel.INFO.Println(newFeed)
 
   err := newFeed.NewFeed()
   if err != nil {

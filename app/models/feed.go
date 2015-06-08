@@ -8,6 +8,7 @@ import (
 type Feed struct {
   FeedId      string  `json:"feedId"`
   UserId      string  `json:"userId"`
+  UserAvatar  string  `json:"userAvatar"`
   Content     string  `json:"content"`
   ImageUrl    string  `json:"imageUrl,omitempty"`
   CreateAt    int64   `json:"createAt"`
