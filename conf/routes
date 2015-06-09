@@ -16,7 +16,7 @@ GET 	/m/:userId 						Message.Get
 GET 	/m/:userId/:messageId 			Message.Check
 
 GET 	/c/:feedId 						Comment.GetComments
-POST 	/c/:feedId 						Comment.PostComment
+POST 	/c/:feedId/:poster 				Comment.PostComment
 
 # User registration
 POST /u/registry/:device/:smscode  		User.Registry

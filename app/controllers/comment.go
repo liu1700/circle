@@ -9,7 +9,7 @@ type Comment struct {
   App
 }
 
-func (c Comment) PostComment(feedId string) revel.Result {
+func (c Comment) PostComment(feedId string, poster string) revel.Result {
   response := new(Response)
   response.Success = true
 
@@ -22,21 +22,23 @@ func (c Comment) PostComment(feedId string) revel.Result {
   newComment.Nickname = c.Request.Form["nickname"][0]
 
   // init msgs
-  newMessage := new(models.Message)
-  newMessage.FeedId = feedId
-  newMessage.UserId = newComment.UserId
-  newMessage.Nickname = newComment.Nickname
-  newMessage.Type = 1
-  newMessage.Checked = 0
-  err := newMessage.AddMessage()
-  if err != nil {
-    response.Success = false
-    response.Error = err.Error()
-    return c.RenderJson(response)
+  if poster != newComment.UserId {
+    newMessage := new(models.Message)
+    newMessage.FeedId = feedId
+    newMessage.UserId = newComment.UserId
+    newMessage.Nickname = newComment.Nickname
+    newMessage.Type = 1
+    newMessage.Checked = 0
+    err := newMessage.AddMessage()
+    if err != nil {
+      response.Success = false
+      response.Error = err.Error()
+      return c.RenderJson(response)
+    }
   }
 
   // save comment
-  err = newComment.NewComment()
+  err := newComment.NewComment()
   if err != nil {
     response.Success = false
     response.Error = err.Error()
