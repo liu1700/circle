@@ -97,7 +97,6 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
         revel.ERROR.Printf(err.Error())
         return false, errors.New("写入图片失败"), ""
       }
-
     } else {
       if f, e := os.Create(ROOT + "/gocode/src/circle" + filePath + fileName + ".jpg"); e == nil {
 
