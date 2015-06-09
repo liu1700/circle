@@ -25,7 +25,7 @@ func (c Comment) PostComment(feedId string, poster string) revel.Result {
   if poster != newComment.UserId {
     newMessage := new(models.Message)
     newMessage.FeedId = feedId
-    newMessage.UserId = newComment.UserId
+    newMessage.UserId = poster
     newMessage.Nickname = newComment.Nickname
     newMessage.Type = 1
     newMessage.Checked = 0
