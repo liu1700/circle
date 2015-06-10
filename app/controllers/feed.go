@@ -11,6 +11,19 @@ type Feed struct {
   App
 }
 
+func (f Feed) Renew(feedId string) revel.Result {
+  response := new(Response)
+  response.Success = true
+
+  err := models.RenewIt(feedId)
+  if err != nil {
+    response.Success = false
+    response.Error = err.Error()
+    return f.RenderJson(response)
+  }
+  return f.RenderJson(response)
+}
+
 func (f Feed) GetFeeds(lon float64, lat float64, distance float64) revel.Result {
   response := new(Response)
   response.Success = true

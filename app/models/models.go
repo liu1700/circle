@@ -99,8 +99,6 @@ func SaveFeed(feed *Feed) error {
   newFeedIds = append(newFeedIds, key)
   newFeedIds = append(newFeedIds, feedIds...)
 
-  revel.INFO.Println(feedIds)
-
   _ = _cache.Set(FEED_LIST, newFeedIds, _cache.FOREVER)
 
   // to user feed list
@@ -148,6 +146,53 @@ func GetFeed(feedId string) (*Feed, error) {
   return feed, err
 }
 
+func RenewIt(feedId string) error {
+  key := CacheKeyFeedById(feedId)
+  feed := new(Feed)
+  err := _cache.Get(key, &feed)
+  if err != nil {
+    return err
+  }
+
+  // renew feed list
+  feedIds := []string{}
+  _ = _cache.Get(FEED_LIST, &feedIds)
+
+  for i := 0; i < len(feedIds); i++ {
+    if feedIds[i] == key {
+      feedIds = append(feedIds[:i], feedIds[i+1:]...)
+      break
+    }
+  }
+
+  newFeedIds := []string{}
+  newFeedIds = append(newFeedIds, key)
+  newFeedIds = append(newFeedIds, feedIds...)
+
+  _ = _cache.Set(FEED_LIST, newFeedIds, _cache.FOREVER)
+
+  // renew feed
+  feed.CreateAt += 86400
+  _ = _cache.Set(key, *feed, _cache.FOREVER)
+
+  // renew user feed
+  feeds := []Feed{}
+  userKey := CacheFeedForUser(feed.UserId)
+  _ = _cache.Get(userKey, &feeds)
+  for i := 0; i < len(feeds); i++ {
+    if feeds[i].FeedId == feedId {
+      feeds = append(feeds[:i], feeds[i+1:]...)
+      break
+    }
+  }
+  newFeeds := []Feed{}
+  newFeeds = append(newFeeds, *feed)
+  newFeeds = append(newFeeds, feeds...)
+
+  return _cache.Set(userKey, newFeeds, _cache.FOREVER)
+
+}
+
 //Comment
 func SaveComment(c Comment) error {
   comments := []Comment{}
@@ -167,8 +212,10 @@ func AddToMessageList(m Message) error {
   msgs := []Message{}
   key := CacheMessageKey(m.UserId)
   _ = _cache.Get(key, &msgs)
-  msgs = append(msgs, m)
-  return _cache.Set(key, msgs, _cache.FOREVER)
+  newMsgs := []Message{}
+  newMsgs = append(newMsgs, m)
+  newMsgs = append(newMsgs, msgs...)
+  return _cache.Set(key, newMsgs, _cache.FOREVER)
 }
 
 func GetMessages(userid string) []Message {
