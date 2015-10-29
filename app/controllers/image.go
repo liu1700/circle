@@ -92,7 +92,7 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     // create file for write
     if f, e := os.Create(ROOT + filePath + fileName + ".png"); e == nil {
 
-      err := png.Encode(f, newImage, nil)
+      err := png.Encode(f, newImage)
       if err != nil {
         revel.ERROR.Printf(err.Error())
         return false, errors.New("写入图片失败"), ""
@@ -100,7 +100,7 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     } else {
       if f, e := os.Create(ROOT + "/gocode/src/circle" + filePath + fileName + ".png"); e == nil {
 
-        err := png.Encode(f, newImage, nil)
+        err := png.Encode(f, newImage)
         if err != nil {
           revel.ERROR.Printf(err.Error())
           return false, errors.New("写入图片失败"), ""
