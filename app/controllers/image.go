@@ -7,7 +7,7 @@ import (
   "github.com/nu7hatch/gouuid"
   "github.com/revel/revel"
   "image"
-  "image/jpeg"
+  "image/png"
   "os"
 )
 
@@ -90,17 +90,17 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     newImage := resize.Resize(width, height, img, resize.Lanczos2)
 
     // create file for write
-    if f, e := os.Create(ROOT + filePath + fileName + ".jpg"); e == nil {
+    if f, e := os.Create(ROOT + filePath + fileName + ".png"); e == nil {
 
-      err := jpeg.Encode(f, newImage, nil)
+      err := png.Encode(f, newImage, nil)
       if err != nil {
         revel.ERROR.Printf(err.Error())
         return false, errors.New("写入图片失败"), ""
       }
     } else {
-      if f, e := os.Create(ROOT + "/gocode/src/circle" + filePath + fileName + ".jpg"); e == nil {
+      if f, e := os.Create(ROOT + "/gocode/src/circle" + filePath + fileName + ".png"); e == nil {
 
-        err := jpeg.Encode(f, newImage, nil)
+        err := png.Encode(f, newImage, nil)
         if err != nil {
           revel.ERROR.Printf(err.Error())
           return false, errors.New("写入图片失败"), ""
