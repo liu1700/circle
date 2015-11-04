@@ -4,41 +4,41 @@
 
 module:testrunner
 
-GET     /                                       App.Index
-GET 	/check/:deviceId/:userid 				App.Check
+GET   /                                     App.Index
+GET   /check/:deviceId/:userid              App.Check
 
-GET		/f/feeds/:lon/:lat/:distance 	Feed.GetFeeds
-GET 	/f/feed/:feedId 				Feed.GetFeed
-GET 	/f/feed/own/:userid 			Feed.GetUserFeeds
-GET 	/renew/:feedId 					Feed.Renew
-POST 	/f/feed 						Feed.CreateFeed
+GET   /f/feeds/:lon/:lat/:distance          Feed.GetFeeds
+GET   /f/feed/:feedId                       Feed.GetFeed
+GET   /f/feed/own/:userid                   Feed.GetUserFeeds
+GET   /renew/:feedId                        Feed.Renew
+POST  /f/feed                               Feed.CreateFeed
 
-GET 	/m/:userId 						Message.Get
-GET 	/m/:userId/:messageId 			Message.Check
+GET   /m/:userId                            Message.Get
+GET   /m/:userId/:messageId                 Message.Check
 
-GET 	/c/:feedId 						Comment.GetComments
-POST 	/c/:feedId/:poster 				Comment.PostComment
+GET   /c/:feedId                            Comment.GetComments
+POST  /c/:feedId/:poster                    Comment.PostComment
 
 # User registration
-POST /u/registry/:device/:smscode  		User.Registry
+POST /u/registry/:device/:smscode           User.Registry
 
 # User sign in
-POST /u/signin   						User.SignIn
+POST /u/signin                              User.SignIn
 
 # Sign out
-GET /u/signout/:userid  						 User.SignOut
+GET /u/signout/:userid                      User.SignOut
 # Send sms code to the phone
-POST /u/smscode                          User.SendCode
+POST /u/smscode                             User.SendCode
 
 #Update user name
-POST /u/update/nickname/:userid			 User.UpdateNickname
+POST /u/update/nickname/:userid             User.UpdateNickname
 #Update user avatar
 
-POST    /image/avatar/:width/:height     Image.UploadAvatar
-POST    /image/upload/:width/:height     Image.UploadImage
+POST    /image/avatar/:width/:height        Image.UploadAvatar
+POST    /image/upload/:width/:height        Image.UploadImage
 
-GET     /avatar/*filepath 				 Static.Serve("upload/avatar")
-GET     /images/*filepath 				 Static.Serve("upload/images")
+GET     /avatar/*filepath                   Static.Serve("upload/avatar")
+GET     /images/*filepath                   Static.Serve("upload/images")
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
