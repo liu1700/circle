@@ -3,12 +3,14 @@ package controllers
 import (
   "bytes"
   "errors"
+  "github.com/awslabs/aws-sdk-go/aws"
+  // "github.com/awslabs/aws-sdk-go/aws/awsutil"
+  "github.com/awslabs/aws-sdk-go/service/s3"
   "github.com/nfnt/resize"
   "github.com/nu7hatch/gouuid"
   "github.com/revel/revel"
   "image"
   "image/png"
-  "io"
   "os"
 )
 
