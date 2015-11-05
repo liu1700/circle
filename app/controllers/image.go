@@ -83,33 +83,22 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     img, str, err := image.Decode(bytes.NewReader(imageStream))
     if err != nil {
       revel.ERROR.Println(err.Error())
-      return false, errors.New("解析图片失败"), ""
+      return false, errors.New("Error when Decode"), ""
     }
     revel.INFO.Println(str)
 
     newImage := resize.Resize(width, height, img, resize.Lanczos2)
 
     // create file for write
-    if f, e := os.Create(ROOT + filePath + fileName + ".png"); e == nil {
-
-      err := png.Encode(f, newImage)
-      if err != nil {
-        revel.ERROR.Printf(err.Error())
-        return false, errors.New("写入图片失败"), ""
-      }
-    } else {
-      if f, e := os.Create(ROOT + "/gocode/src/circle" + filePath + fileName + ".png"); e == nil {
-
-        err := png.Encode(f, newImage)
-        if err != nil {
-          revel.ERROR.Printf(err.Error())
-          return false, errors.New("写入图片失败"), ""
-        }
-
-      } else {
-        revel.ERROR.Printf(e.Error())
-        return false, errors.New("上传图片失败"), ""
-      }
+    f, e := os.Create(ROOT + filePath + fileName + ".png")
+    if e != nil {
+      revel.ERROR.Println(e.Error())
+      return false, errors.New("写入图片失败"), ""
+    }
+    e = png.Encode(f, newImage)
+    if err != nil {
+      revel.ERROR.Printf(err.Error())
+      return false, errors.New("Error when Encode"), ""
     }
   } else {
     revel.ERROR.Printf(e.Error())
