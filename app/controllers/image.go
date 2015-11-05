@@ -96,7 +96,7 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
       return false, errors.New("Error when create folder"), ""
     }
 
-    f, e = os.Create(ROOT + filePath + fileName + ".png")
+    f, e := os.Create(ROOT + filePath + fileName + ".png")
     defer f.Close()
     if e != nil {
       revel.ERROR.Println(e.Error())
