@@ -99,19 +99,22 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
 
     go func() {
       // Upload image to aws s3
-      cred := aws.DefaultChainCredentials
-      cred.Get()
+      cred := NewEnvCredentials()
+      credValue, err := creds.Get()
+      if err != nil {
+        revel.ERROR.Println(err.Error())
+      }
       svc := s3.New(&aws.Config{
-        Region:      AWS_REGION,
-        Credentials: cred,
-        LogLevel:    1})
+        Region:      aws.String(AWS_REGION),
+        Credentials: credValue,
+      })
 
       params := &s3.PutObjectInput{
         Bucket: aws.String(IMAGE_BUCKET_NAME),
         Key:    aws.String(fileName + ".png"),
         Body:   bytes.NewReader(buffer.Bytes()),
       }
-      _, err := svc.PutObject(params)
+      _, err = svc.PutObject(params)
       if err != nil {
         revel.ERROR.Println(err.Error())
       }
