@@ -90,14 +90,21 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     newImage := resize.Resize(width, height, img, resize.Lanczos2)
 
     // create file for write
-    f, e := os.Create(ROOT + filePath + fileName + ".png")
+    e = os.MkdirAll(ROOT+filePath, 0777)
+    if e != nil {
+      revel.ERROR.Println(e.Error())
+      return false, errors.New("Error when create folder"), ""
+    }
+
+    f, e = os.Create(ROOT + filePath + fileName + ".png")
+    defer f.Close()
     if e != nil {
       revel.ERROR.Println(e.Error())
       return false, errors.New("写入图片失败"), ""
     }
     e = png.Encode(f, newImage)
-    if err != nil {
-      revel.ERROR.Printf(err.Error())
+    if e != nil {
+      revel.ERROR.Printf(e.Error())
       return false, errors.New("Error when Encode"), ""
     }
   } else {
