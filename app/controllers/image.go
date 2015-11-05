@@ -8,6 +8,7 @@ import (
   "github.com/revel/revel"
   "image"
   "image/png"
+  "io"
   "os"
 )
 
@@ -16,8 +17,10 @@ type Image struct {
 }
 
 const (
-  AVATAR_UPLOAD_PATH = "/upload/avatar/"
-  IMAGE_UPLOAD_PATH  = "/upload/images/"
+  AWS_REGION         = "ap-northeast-1"
+  IMAGE_BUCKET_NAME  = "circle-android"
+  AVATAR_UPLOAD_PATH = "avatars/"
+  IMAGE_UPLOAD_PATH  = "images/"
   MB                 = 1 << 20 // 1MB
 )
 
@@ -72,7 +75,6 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     defer imagePart.Close()
     imageStream := make([]byte, 10*MB)
 
-    revel.INFO.Println(handler.Filename)
     fileName = handler.Filename
     if fileName == "image" {
       uuid, _ := uuid.NewV4()
@@ -85,28 +87,35 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
       revel.ERROR.Println(err.Error())
       return false, errors.New("Error when Decode"), ""
     }
-    revel.INFO.Println(str)
 
     newImage := resize.Resize(width, height, img, resize.Lanczos2)
-
-    // create file for write
-    e = os.MkdirAll(ROOT+filePath, 0777)
-    if e != nil {
-      revel.ERROR.Println(e.Error())
-      return false, errors.New("Error when create folder"), ""
-    }
-
-    f, e := os.Create(ROOT + filePath + fileName + ".png")
-    defer f.Close()
-    if e != nil {
-      revel.ERROR.Println(e.Error())
-      return false, errors.New("写入图片失败"), ""
-    }
-    e = png.Encode(f, newImage)
+    buffer := new(bytes.Buffer)
+    e = png.Encode(buffer, newImage)
     if e != nil {
       revel.ERROR.Printf(e.Error())
       return false, errors.New("Error when Encode"), ""
     }
+
+    go func() {
+      // Upload image to aws s3
+      cred := aws.DefaultChainCredentials
+      cred.Get()
+      svc := s3.New(&aws.Config{
+        Region:      AWS_REGION,
+        Credentials: cred,
+        LogLevel:    1})
+
+      params := &s3.PutObjectInput{
+        Bucket: aws.String(IMAGE_BUCKET_NAME),
+        Key:    aws.String(fileName + ".png"),
+        Body:   bytes.NewReader(buffer.Bytes()),
+      }
+      _, err := svc.PutObject(params)
+      if err != nil {
+        revel.ERROR.Println(err.Error())
+      }
+    }()
+
   } else {
     revel.ERROR.Printf(e.Error())
     return false, errors.New("上传图片失败"), ""
