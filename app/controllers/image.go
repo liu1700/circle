@@ -84,7 +84,7 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
     }
 
     imagePart.Read(imageStream)
-    img, str, err := image.Decode(bytes.NewReader(imageStream))
+    img, _, err := image.Decode(bytes.NewReader(imageStream))
     if err != nil {
       revel.ERROR.Println(err.Error())
       return false, errors.New("Error when Decode"), ""
