@@ -3,8 +3,9 @@ package controllers
 import (
   "bytes"
   "errors"
-  "github.com/aws/aws-sdk-go/aws"
-  "github.com/aws/aws-sdk-go/service/s3"
+  // "github.com/aws/aws-sdk-go/aws"
+  // "github.com/aws/aws-sdk-go/aws/credentials"
+  // "github.com/aws/aws-sdk-go/service/s3"
   "github.com/nfnt/resize"
   "github.com/nu7hatch/gouuid"
   "github.com/revel/revel"
@@ -18,8 +19,8 @@ type Image struct {
 }
 
 const (
-  AWS_REGION         = "ap-northeast-1"
-  IMAGE_BUCKET_NAME  = "circle-android"
+  // AWS_REGION         = "ap-northeast-1"
+  // IMAGE_BUCKET_NAME  = "circle-android"
   AVATAR_UPLOAD_PATH = "avatars/"
   IMAGE_UPLOAD_PATH  = "images/"
   MB                 = 1 << 20 // 1MB
@@ -97,28 +98,29 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
       return false, errors.New("Error when Encode"), ""
     }
 
-    go func() {
-      // Upload image to aws s3
-      cred := NewEnvCredentials()
-      credValue, err := creds.Get()
-      if err != nil {
-        revel.ERROR.Println(err.Error())
-      }
-      svc := s3.New(&aws.Config{
-        Region:      aws.String(AWS_REGION),
-        Credentials: credValue,
-      })
+    // go func() {
+    //   // Upload image to aws s3
 
-      params := &s3.PutObjectInput{
-        Bucket: aws.String(IMAGE_BUCKET_NAME),
-        Key:    aws.String(fileName + ".png"),
-        Body:   bytes.NewReader(buffer.Bytes()),
-      }
-      _, err = svc.PutObject(params)
-      if err != nil {
-        revel.ERROR.Println(err.Error())
-      }
-    }()
+    //   cred := credentials.NewEnvCredentials()
+    //   credValue, err := creds.Get()
+    //   if err != nil {
+    //     revel.ERROR.Println(err.Error())
+    //   }
+    //   svc := s3.New(&aws.Config{
+    //     Region:      aws.String(AWS_REGION),
+    //     Credentials: credValue,
+    //   })
+
+    //   params := &s3.PutObjectInput{
+    //     Bucket: aws.String(IMAGE_BUCKET_NAME),
+    //     Key:    aws.String(fileName + ".png"),
+    //     Body:   bytes.NewReader(buffer.Bytes()),
+    //   }
+    //   _, err = svc.PutObject(params)
+    //   if err != nil {
+    //     revel.ERROR.Println(err.Error())
+    //   }
+    // }()
 
   } else {
     revel.ERROR.Printf(e.Error())
