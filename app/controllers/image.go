@@ -4,6 +4,7 @@ import (
   "bytes"
   "errors"
   "github.com/aws/aws-sdk-go/aws"
+  "github.com/aws/aws-sdk-go/aws/credentials"
   "github.com/aws/aws-sdk-go/service/s3"
   "github.com/nfnt/resize"
   "github.com/nu7hatch/gouuid"
@@ -99,7 +100,8 @@ func processImage(c Image, filePath string, width uint, height uint) (bool, erro
 
     go func() {
       // Upload image to aws s3
-      cred := NewEnvCredentials()
+
+      cred := credentials.NewEnvCredentials()
       credValue, err := creds.Get()
       if err != nil {
         revel.ERROR.Println(err.Error())
